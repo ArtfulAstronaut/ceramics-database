@@ -18,7 +18,8 @@ async function fetchData() {
                 shelfNumber: row.c[6]?.v || '',
                 shelfLevel: row.c[7]?.v || '',
                 keywords: row.c[8]?.v || '',
-                notes: row.c[9]?.v || ''
+                notes: row.c[9]?.v || '',
+                image: row.c[10]?.v || 'https://www.shutterstock.com/shutterstock/videos/1111389205/thumb/12.jpg?ip=x480' // Fallback image
             };
         });
         return data;
@@ -41,7 +42,8 @@ function displayMolds(molds) {
         const moldCard = document.createElement('div');
         moldCard.className = 'mold-card';
         moldCard.innerHTML = `
-            <a href="details.html?name=${encodeURIComponent(mold.name)}&number=${encodeURIComponent(mold.number)}&manufacturer=${encodeURIComponent(mold.manufacturer)}&bisquePrice=${encodeURIComponent(mold.bisquePrice)}&partOfASet=${encodeURIComponent(mold.partOfASet)}&shelfWall=${encodeURIComponent(mold.shelfWall)}&shelfNumber=${encodeURIComponent(mold.shelfNumber)}&shelfLevel=${encodeURIComponent(mold.shelfLevel)}&keywords=${encodeURIComponent(mold.keywords)}&notes=${encodeURIComponent(mold.notes)}" class="mold-link" target="_blank">
+             <a href="details.html?name=${encodeURIComponent(mold.name)}&number=${encodeURIComponent(mold.number)}&manufacturer=${encodeURIComponent(mold.manufacturer)}&bisquePrice=${encodeURIComponent(mold.bisquePrice)}&partOfASet=${encodeURIComponent(mold.partOfASet)}&shelfWall=${encodeURIComponent(mold.shelfWall)}&shelfNumber=${encodeURIComponent(mold.shelfNumber)}&shelfLevel=${encodeURIComponent(mold.shelfLevel)}&keywords=${encodeURIComponent(mold.keywords)}&notes=${encodeURIComponent(mold.notes)}&image=${encodeURIComponent(mold.image)}" class="mold-link" target="_blank">
+                <img src="${mold.image}" alt="${mold.name || 'Mold Image'}" class="mold-image">
                 <img src="${mold.image}" alt="${mold.name || 'Mold Image'}">
                 <div class="mold-info">
                     <h3>${mold.name}</h3>

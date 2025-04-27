@@ -86,9 +86,12 @@ header {
 }
 
 .mold-card img {
-    width: 100%;
-    height: 200px;
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 200px; /* Adjust height for the main page */
     object-fit: cover;
+    border-radius: 8px; /* Optional: Add rounded corners */
 }
 
 .mold-info {
@@ -123,6 +126,14 @@ footer {
 #moldDetails p {
     margin: 0.5rem 0;
     font-size: 16px;
+}
+
+#moldDetails img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: cover;
 }
 
 .sort-container {
