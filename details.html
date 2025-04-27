@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mold Details</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Mold Details</h1>
+    </header>
+    
+    <main>
+        <div id="moldDetails"></div>
+    </main>
+
+
+    <script>
+        const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc'; 
+const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
+
+        async function fetchData() {
+            try {
+                const res = await fetch(base);
+                if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+                const text = await res.text();
+                const jsonData = JSON.parse(text.substr(47).slice(0, -2));
+                console.log(jsonData.table.rows);
+                const data = jsonData.table.rows.map(row => {
+                    return {
+                        name: row.c[0]?.v || '',
+                        number: row.c[1]?.v || '',
+                        manufacturer: row.c[2]?.v || '',
+                        bisquePrice: row.c[3]?.v || '',
+                        partOfASet: row.c[4]?.v || '',
+                        shelfWall: row.c[5]?.v || '',
+                        shelfNumber: row.c[6]?.v || '',
+                        shelfLevel: row.c[7]?.v || '',
+                        keywords: row.c[8]?.v || '',
+                        notes: row.c[9]?.v || '',
+                        image: row.c[10]?.v || '',
+                    };
+                });
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return [];
+            }
+        }
+   
+async function initialize() {
+    const data = await fetchData();
+    const params = new URLSearchParams(window.location.search);
+    const moldName = params.get('name');
+
+    // Find the specific mold by name
+    const mold = data.find(m => m.name === moldName);
+
+
+    // Populate the mold details
+    const moldDetails = document.getElementById('moldDetails');
+    moldDetails.innerHTML = `
+        <img src="${mold.image || ''}" alt="${mold.name}">
+        <h2>${mold.name}</h2>
+        <p><strong>Number:</strong> ${mold.number}</p>
+        <p><strong>Manufacturer:</strong> ${mold.manufacturer}</p>
+        <p><strong>Bisque Price:</strong> ${mold.bisquePrice}</p>
+        <p><strong>Part of a Set:</strong> ${mold.partOfASet}</p>
+        <p><strong>Shelf Wall:</strong> ${mold.shelfWall}</p>
+        <p><strong>Shelf Number:</strong> ${mold.shelfNumber}</p>
+        <p><strong>Shelf Level:</strong> ${mold.shelfLevel}</p>
+        <p><strong>Keywords:</strong> ${mold.keywords}</p>
+        <p><strong>Notes:</strong> ${mold.notes}</p>
+    `;
+}
+
+initialize();
+    </script>
+</body>
+</html>
+
+
+<footer>
+    <p>Made with ❤️ from the Earth</p>
+</footer>

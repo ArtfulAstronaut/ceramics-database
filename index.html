@@ -2,41 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Brandi's Ceramics: Mold Database</title>
+    <title>Brandi's Ceramic Mold Database</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>
-        <h1>Brandi's Ceramics Mold Database</h1>
+        <h1>Brandi's Ceramics: Mold Database</h1>
     </header>
     
     <main>
         <div class="search-container">
-            <!-- Search bar -->
-            <input type="text" id="searchBar" placeholder="Search for a mold..." onkeyup="searchMolds()" />
+            <input type="text" id="searchBar" placeholder="Search molds..." aria-label="Search molds">
         </div>
-
-        <div class="filters">
-            <label>Category:
-                <select id="categoryFilter">
-                    <option value="">All</option>
-                    <option value="Animal">Animal</option>
-                    <option value="Holiday">Holiday</option>
-                    <option value="Figurine">Figurine</option>
-                    <option value="Decorative">Decorative</option>
-                    <option value="Functional">Functional</option>
-                    <option value="Art">Art</option>
-                    <option value="Miscellaneous">Miscellaneous</option>
-                    <option value="Nature">Nature</option>
-                    <option value="People">People</option>
-                    <option value="Religious">Religious</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Vehicles">Vehicles</option>
-                    <option value="Food">Food</option>
-                    <option value="Plants">Plants</option>
-                    <option value="Furniture">Furniture</option>
-                </select>
-            </label>
+        <div class="sort-container">
+            <label for="sortSelect">Sort by:</label>
+            <select id="sortSelect" aria-label="Sort molds">
+                <option value="name">Name</option>
+                <option value="number">Number</option>
+                <option value="manufacturer">Manufacturer</option>
+                <option value="bisquePrice">Bisque Price</option>
+            </select>
         </div>
 
         <div id="moldGrid"></div>
@@ -46,6 +32,6 @@
         <p>Made with ❤️ from the Earth</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
