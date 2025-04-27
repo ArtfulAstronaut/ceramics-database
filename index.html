@@ -7,12 +7,13 @@
 </head>
 <body>
     <header>
-        <h1>Ceramic Mold Database</h1>
+        <h1>Brandi's Ceramics Mold Database</h1>
     </header>
     
     <main>
         <div class="search-container">
-            <input type="text" id="searchBar" placeholder="Search molds...">
+            <!-- Search bar -->
+            <input type="text" id="searchBar" placeholder="Search for a mold..." onkeyup="searchMolds()" />
         </div>
 
         <div class="filters">
@@ -22,7 +23,18 @@
                     <option value="Animal">Animal</option>
                     <option value="Holiday">Holiday</option>
                     <option value="Figurine">Figurine</option>
-                    <!-- Add more as needed -->
+                    <option value="Decorative">Decorative</option>
+                    <option value="Functional">Functional</option>
+                    <option value="Art">Art</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
+                    <option value="Nature">Nature</option>
+                    <option value="People">People</option>
+                    <option value="Religious">Religious</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Vehicles">Vehicles</option>
+                    <option value="Food">Food</option>
+                    <option value="Plants">Plants</option>
+                    <option value="Furniture">Furniture</option>
                 </select>
             </label>
         </div>

@@ -1,68 +1,39 @@
-const sheetID = '1gNdq3mvjhSXm68haGgbrC2P29lB2Q_1XWK1nV-WWMow';
-const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
-
-async function fetchData() {
-    const res = await fetch(base);
-    const text = await res.text();
-    const jsonData = JSON.parse(text.substr(47).slice(0, -2));
-    const data = jsonData.table.rows.map(row => {
-        return {
-            name: row.c[0]?.v || '',
-            number: row.c[1]?.v || '',
-            category: row.c[2]?.v || '',
-            image: row.c[3]?.v || '',
-            location: row.c[4]?.v || '',
-            notes: row.c[5]?.v || '',
-            purchaseHistory: row.c[6]?.v || ''
-        };
-    });
-    return data;
-}
-
-function displayMolds(molds) {
-    const moldGrid = document.getElementById('moldGrid');
-    moldGrid.innerHTML = '';
+// The data of molds you fetched from the Google Sheet API (we'll use this for matching)
+const molds = [
+    // Example of mold objects — replace this with actual data fetched from your Google Sheet
+    { name: "Bunny Mold", image: "bunny.jpg", number: "BM-101", location: "Shelf A" },
+    { name: "Pumpkin Mold", image: "pumpkin.jpg", number: "PM-102", location: "Shelf B" },
+    // Add more molds...
+  ];
+  
+  // Function that filters the list of molds based on the search bar input
+  function searchMolds() {
+    let input = document.getElementById('searchBar').value.toLowerCase(); // Get the user input
+    let resultDiv = document.getElementById('result-container'); // This is where the results will go
+    
+    // Clear any previous results
+    resultDiv.innerHTML = "";
+  
+    // Loop through the molds and check if the name matches the search term
     molds.forEach(mold => {
-        const moldCard = document.createElement('div');
-        moldCard.className = 'mold-card';
-        moldCard.innerHTML = `
-            <img src="${mold.image}" alt="${mold.name}">
-            <div class="mold-info">
-                <h3>${mold.name}</h3>
-                <p><strong>Number:</strong> ${mold.number}</p>
-                <p><strong>Location:</strong> ${mold.location}</p>
-            </div>
+      if (mold.name.toLowerCase().includes(input)) {
+        // Create a new div for the matching mold
+        let moldDiv = document.createElement('div');
+        moldDiv.classList.add('mold-item'); // Add a class for styling
+        
+        // Insert the image and name of the mold
+        moldDiv.innerHTML = `
+          <img src="${mold.image}" alt="${mold.name}" class="mold-image" />
+          <div class="mold-info">
+            <h3>${mold.name}</h3>
+            <p>Mold Number: ${mold.number}</p>
+            <p>Location: ${mold.location}</p>
+          </div>
         `;
-        moldCard.addEventListener('click', () => {
-            alert(`Notes: ${mold.notes}\nPurchased: ${mold.purchaseHistory}`);
-        });
-        moldGrid.appendChild(moldCard);
+        
+        // Append the mold to the results container
+        resultDiv.appendChild(moldDiv);
+      }
     });
-}
-
-function setupFilters(data) {
-    const searchBar = document.getElementById('searchBar');
-    const categoryFilter = document.getElementById('categoryFilter');
-
-    function filterMolds() {
-        const searchTerm = searchBar.value.toLowerCase();
-        const category = categoryFilter.value;
-        const filtered = data.filter(mold => {
-            const matchesSearch = mold.name.toLowerCase().includes(searchTerm) || mold.number.toLowerCase().includes(searchTerm);
-            const matchesCategory = category ? mold.category === category : true;
-            return matchesSearch && matchesCategory;
-        });
-        displayMolds(filtered);
-    }
-
-    searchBar.addEventListener('input', filterMolds);
-    categoryFilter.addEventListener('change', filterMolds);
-}
-
-async function initialize() {
-    const molds = await fetchData();
-    displayMolds(molds);
-    setupFilters(molds);
-}
-
-initialize();
+  }
+  
