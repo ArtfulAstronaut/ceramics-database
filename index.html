@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ceramic Mold Database</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Ceramic Mold Database</h1>
+    </header>
+    
+    <main>
+        <div class="search-container">
+            <input type="text" id="searchBar" placeholder="Search molds...">
+        </div>
+
+        <div class="filters">
+            <label>Category:
+                <select id="categoryFilter">
+                    <option value="">All</option>
+                    <option value="Animal">Animal</option>
+                    <option value="Holiday">Holiday</option>
+                    <option value="Figurine">Figurine</option>
+                    <!-- Add more as needed -->
+                </select>
+            </label>
+        </div>
+
+        <div id="moldGrid"></div>
+    </main>
+
+    <footer>
+        <p>Made with ❤️ from the Earth</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
