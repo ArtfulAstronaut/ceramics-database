@@ -1,26 +1,28 @@
 const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc';
 const ApiKey = "AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k";
-const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
-//const base = "https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${ApiKey}";
+//const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
+const base = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${ApiKey}`;
 
 async function fetchData() {
     try {
-        const res = fetch(base).then(response => response.json());
+        const res = await fetch(base);
+        const json = await res.json();
         //if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
         //const jsonData = res.json();
-        const data = res.table.rows.map(row => {
+        console.log(res);
+        const data = json.values.slice(1).map(row => {
             return {
-                name: row.c[0]?.v || '',
-                number: row.c[1]?.v || '',
-                manufacturer: row.c[2]?.v || '',
-                bisquePrice: row.c[3]?.v || '',
-                partOfASet: row.c[4]?.v || '',
-                shelfWall: row.c[5]?.v || '',
-                shelfNumber: row.c[6]?.v || '',
-                shelfLevel: row.c[7]?.v || '',
-                keywords: row.c[8]?.v || '',
-                notes: row.c[9]?.v || '',
-                image: row.c[10]?.v || 'https://www.shutterstock.com/shutterstock/videos/1111389205/thumb/12.jpg?ip=x480' // Fallback image
+                name: row[0] ?? '',
+                number: row[1] ?? '',
+                manufacturer: row[2] ?? '',
+                bisquePrice: row[3] ?? '',
+                partOfASet: row[4] ?? '',
+                shelfWall: row[5] ?? '',
+                shelfNumber: row[6] ?? '',
+                shelfLevel: row[7] ?? '',
+                keywords: row[8] ?? '',
+                notes: row[9] ?? '',
+                image: row[10] ?? 'https://www.shutterstock.com/shutterstock/videos/1111389205/thumb/12.jpg?ip=x480' // Fallback image
             };
         });
         return data;
@@ -61,21 +63,21 @@ function setupFilters(data) {
     const categoryFilter = document.getElementById('categoryFilter');
     const sortSelect = document.getElementById('sortSelect');
 
-    if (!searchBar || !categoryFilter || !sortSelect) {
+    if (!searchBar || /*!categoryFilter ||*/ !sortSelect) {
         console.error('Search bar, category filter, or sort select not found in the DOM.');
         return;
     }
 
     function filterAndSortMolds() {
         const searchTerm = searchBar.value?.toLowerCase() || '';
-        const category = categoryFilter.value || '';
+        //const category = categoryFilter.value || '';
         const sortBy = sortSelect.value;
 
         // Filter molds
         const filtered = data.filter(mold => {
             const matchesSearch = mold.name.toLowerCase().includes(searchTerm) || mold.number.toLowerCase().includes(searchTerm);
-            const matchesCategory = category ? mold.category === category : true;
-            return matchesSearch && matchesCategory;
+            //const matchesCategory = category ? mold.category === category : true;
+            return matchesSearch;// && matchesCategory;
         });
 
         // Sort molds
@@ -99,7 +101,7 @@ function setupFilters(data) {
     }
 
     searchBar.addEventListener('input', debounce(filterAndSortMolds, 300));
-    categoryFilter.addEventListener('change', filterAndSortMolds);
+    //categoryFilter.addEventListener('change', filterAndSortMolds);
     sortSelect.addEventListener('change', filterAndSortMolds);
 }
 
