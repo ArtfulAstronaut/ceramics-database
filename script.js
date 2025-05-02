@@ -1,13 +1,14 @@
 const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc';
+const ApiKey = "AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k";
 const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
+//const base = "https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${ApiKey}";
 
 async function fetchData() {
     try {
-        const res = await fetch(base);
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        const text = await res.text();
-        const jsonData = JSON.parse(text.substr(47).slice(0, -2));
-        const data = jsonData.table.rows.map(row => {
+        const res = fetch(base).then(response => response.json());
+        //if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        //const jsonData = res.json();
+        const data = res.table.rows.map(row => {
             return {
                 name: row.c[0]?.v || '',
                 number: row.c[1]?.v || '',
@@ -44,7 +45,6 @@ function displayMolds(molds) {
         moldCard.innerHTML = `
              <a href="details.html?name=${encodeURIComponent(mold.name)}&number=${encodeURIComponent(mold.number)}&manufacturer=${encodeURIComponent(mold.manufacturer)}&bisquePrice=${encodeURIComponent(mold.bisquePrice)}&partOfASet=${encodeURIComponent(mold.partOfASet)}&shelfWall=${encodeURIComponent(mold.shelfWall)}&shelfNumber=${encodeURIComponent(mold.shelfNumber)}&shelfLevel=${encodeURIComponent(mold.shelfLevel)}&keywords=${encodeURIComponent(mold.keywords)}&notes=${encodeURIComponent(mold.notes)}&image=${encodeURIComponent(mold.image)}" class="mold-link" target="_blank">
                 <img src="${mold.image}" alt="${mold.name || 'Mold Image'}" class="mold-image">
-                <img src="${mold.image}" alt="${mold.name || 'Mold Image'}">
                 <div class="mold-info">
                     <h3>${mold.name}</h3>
                     <p><strong>Number:</strong> ${mold.number}</p>
