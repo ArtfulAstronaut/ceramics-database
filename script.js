@@ -1,6 +1,5 @@
 const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc';
 const ApiKey = "AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k";
-//const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
 const base = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${ApiKey}`;
 
 async function fetchData() {
