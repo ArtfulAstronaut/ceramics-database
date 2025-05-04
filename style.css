@@ -57,8 +57,9 @@ header {
 
 .mold-info h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 23px;
     font-weight: bold;
+    text-align: center;
 }
 
 .mold-info p {
@@ -156,7 +157,7 @@ footer {
 }
 
 .grid-image {
-    width: auto;
+    width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 5px; /* Optional: Add rounded corners */
