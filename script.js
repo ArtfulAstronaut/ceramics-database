@@ -1,5 +1,6 @@
 const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc';
 const ApiKey = "AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k";
+//const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
 const base = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${ApiKey}`;
 
 async function fetchData() {
@@ -35,17 +36,25 @@ async function fetchData() {
 function displayMolds(molds) {
     const moldGrid = document.getElementById('moldGrid');
     moldGrid.innerHTML = '';
+
     if (!Array.isArray(molds) || molds.length === 0) {
         moldGrid.innerHTML = '<p>No molds found.</p>';
         return;
     }
+
     molds.forEach(mold => {
         if (!mold || !mold.name) return; // Skip invalid molds
+
+        // Use the image only if it exists; otherwise, skip rendering the image tag
+        const imageTag = mold.image
+            ? `<img src="${mold.image}" alt="${mold.name || 'Mold Image'}" class="mold-image">`
+            : '';
+
         const moldCard = document.createElement('div');
         moldCard.className = 'mold-card';
         moldCard.innerHTML = `
-             <a href="details.html?name=${encodeURIComponent(mold.name)}&number=${encodeURIComponent(mold.number)}&manufacturer=${encodeURIComponent(mold.manufacturer)}&bisquePrice=${encodeURIComponent(mold.bisquePrice)}&partOfASet=${encodeURIComponent(mold.partOfASet)}&shelfWall=${encodeURIComponent(mold.shelfWall)}&shelfNumber=${encodeURIComponent(mold.shelfNumber)}&shelfLevel=${encodeURIComponent(mold.shelfLevel)}&keywords=${encodeURIComponent(mold.keywords)}&notes=${encodeURIComponent(mold.notes)}&image=${encodeURIComponent(mold.image)}" class="mold-link" target="_blank">
-                <img src="${mold.image}" alt="${mold.name || 'Mold Image'}" class="mold-image">
+            <a href="details.html?name=${encodeURIComponent(mold.name)}&number=${encodeURIComponent(mold.number)}&manufacturer=${encodeURIComponent(mold.manufacturer)}&bisquePrice=${encodeURIComponent(mold.bisquePrice)}&partOfASet=${encodeURIComponent(mold.partOfASet)}&shelfWall=${encodeURIComponent(mold.shelfWall)}&shelfNumber=${encodeURIComponent(mold.shelfNumber)}&shelfLevel=${encodeURIComponent(mold.shelfLevel)}&keywords=${encodeURIComponent(mold.keywords)}&notes=${encodeURIComponent(mold.notes)}&image=${encodeURIComponent(mold.image)}" class="mold-link" target="_blank">
+                ${imageTag}
                 <div class="mold-info">
                     <h3>${mold.name}</h3>
                     <p><strong>Number:</strong> ${mold.number}</p>
@@ -113,6 +122,10 @@ async function initialize() {
     }
     displayMolds(molds);
     setupFilters(molds);
+}
+
+function goBack() {
+    window.location.href = 'index.html'; // Replace 'index.html' with the actual path to your landing page
 }
 
 initialize();

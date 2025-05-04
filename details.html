@@ -8,16 +8,24 @@
 </head>
 <body>
     <header>
-        <h1>Mold Details</h1>
+        <button class="back-button" onclick="goBack()">← Back to Home</button>
+        <h1>{mold.name}</h1>
     </header>
     
     <main>
+        <p>Click any image to expand.</p>
         <div id="moldDetails"></div>
     </main>
 
     <footer>
         <p>Made with ❤️ from the Earth</p>
     </footer>
+
+    <!-- Modal for image viewing -->
+    <div id="imageModal" class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <img id="modalImage" src="" alt="Expanded Image">
+    </div>
 
     <script>
         const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc'; // Replace with your actual sheet ID
@@ -41,7 +49,10 @@
                         shelfLevel: row[7] ?? '',
                         keywords: row[8] ?? '',
                         notes: row[9] ?? '',
-                        image: row[10] ?? 'https://via.placeholder.com/300' // Fallback image
+                        image: row[10] ?? '',
+                        image2: row[11] ?? '',
+                        image3: row[12] ?? '',
+                        image4: row[13] ?? '',
                     };
                 });
                 return data;
@@ -68,12 +79,24 @@
                 return;
             }
 
+            // Set the header to the mold name
+            const header = document.querySelector('header h1');
+            header.textContent = mold.name;
+
             // Combine shelfWall, shelfNumber, and shelfLevel into one line
             const shelfLocation = `${mold.shelfWall || 'N/A'} - ${mold.shelfNumber || 'N/A'} - ${mold.shelfLevel || 'N/A'}`;
 
+            // Dynamically generate image grid only for non-empty image URLs
+            const images = [mold.image, mold.image2, mold.image3, mold.image4]
+                .filter(image => image) // Filter out empty or undefined image URLs
+                .map(image => `<img src="${image}" alt="${mold.name}" class="grid-image" onclick="openModal('${image}')">`)
+                .join('');
+
             const moldDetails = document.getElementById('moldDetails');
             moldDetails.innerHTML = `
-                <img src="${mold.image}" alt="${mold.name}" style="width: 100%; max-height: 300px; object-fit: cover;">
+                <div class="image-grid">
+                    ${images}
+                </div>
                 <h2>${mold.name}</h2>
                 <p><strong>Number:</strong> ${mold.number}</p>
                 <p><strong>Manufacturer:</strong> ${mold.manufacturer}</p>
@@ -83,6 +106,20 @@
                 <p><strong>Keywords:</strong> ${mold.keywords}</p>
                 <p><strong>Notes:</strong> ${mold.notes}</p>
             `;
+        }
+
+        // Function to open the modal with the clicked image
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex'; // Show the modal
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none'; // Hide the modal
         }
 
         initializeDetailsPage();
