@@ -29,17 +29,23 @@ const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
                 console.log(jsonData.table.rows);
                 const data = jsonData.table.rows.map(row => {
                     return {
-                        name: row.c[0]?.v || '',
-                        number: row.c[1]?.v || '',
-                        manufacturer: row.c[2]?.v || '',
-                        bisquePrice: row.c[3]?.v || '',
-                        partOfASet: row.c[4]?.v || '',
-                        shelfWall: row.c[5]?.v || '',
-                        shelfNumber: row.c[6]?.v || '',
-                        shelfLevel: row.c[7]?.v || '',
-                        keywords: row.c[8]?.v || '',
-                        notes: row.c[9]?.v || '',
-                        image: row.c[10]?.v || '',
+                        ame: row[0] ?? '',
+                      number: row[1] ?? '',
+                     manufacturer: row[2] ?? '',
+                      bisquePrice: row[3] ?? '',
+                      partOfASet: row[4] ?? '',
+                      shelfWall: row[5] ?? '',
+                      shelfNumber: row[6] ?? '',
+                      shelfLevel: row[7] ?? '',
+                      keywords: row[8] ?? '',
+                      notes: row[9] ?? '',
+                      image: row[10] ?? 'https://www.shutterstock.com/shutterstock/videos/1111389205/thumb/12.jpg?ip=x480' // Fallback image
+                      image2: row.c[11] ?? '',
+                        image3: row.c[12] ?? '',
+                        image4: row.c[13] ?? '',
+                        image5: row.c[14] ?? '',
+                        image6: row.c[15] ?? '',
+                        image7: row.c[16] ?? '',
                     };
                 });
                 return data;
@@ -61,15 +67,15 @@ async function initialize() {
     // Populate the mold details
     const moldDetails = document.getElementById('moldDetails');
     moldDetails.innerHTML = `
-        <img src="${mold.image || ''}" alt="${mold.name}">
+        <img src="${mold.image || ''}" 
         <h2>${mold.name}</h2>
         <p><strong>Number:</strong> ${mold.number}</p>
         <p><strong>Manufacturer:</strong> ${mold.manufacturer}</p>
         <p><strong>Bisque Price:</strong> ${mold.bisquePrice}</p>
         <p><strong>Part of a Set:</strong> ${mold.partOfASet}</p>
-        <p><strong>Shelf Wall:</strong> ${mold.shelfWall}</p>
-        <p><strong>Shelf Number:</strong> ${mold.shelfNumber}</p>
-        <p><strong>Shelf Level:</strong> ${mold.shelfLevel}</p>
+        <p><strong>Shelf Wall:</strong> ${mold.shelfWall}
+        <p><strong>Shelf Number:</strong> ${mold.shelfNumber}
+        <p><strong>Shelf Level:</strong> ${mold.shelfLevel}
         <p><strong>Keywords:</strong> ${mold.keywords}</p>
         <p><strong>Notes:</strong> ${mold.notes}</p>
     `;
