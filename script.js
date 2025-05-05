@@ -56,10 +56,9 @@ function displayMolds(molds) {
             <a href="details.html?name=${encodeURIComponent(mold.name)}&number=${encodeURIComponent(mold.number)}&manufacturer=${encodeURIComponent(mold.manufacturer)}&bisquePrice=${encodeURIComponent(mold.bisquePrice)}&partOfASet=${encodeURIComponent(mold.partOfASet)}&shelfWall=${encodeURIComponent(mold.shelfWall)}&shelfNumber=${encodeURIComponent(mold.shelfNumber)}&shelfLevel=${encodeURIComponent(mold.shelfLevel)}&keywords=${encodeURIComponent(mold.keywords)}&notes=${encodeURIComponent(mold.notes)}&image=${encodeURIComponent(mold.image)}" class="mold-link" target="_blank">
                 ${imageTag}
                 <div class="mold-info">
-                    <h3>${mold.name}</h3>
-                    <p><strong>Number:</strong> ${mold.number}</p>
-                    <p><strong>Manufacturer:</strong> ${mold.manufacturer}</p>
-                    <p><strong>Bisque Price:</strong> ${mold.bisquePrice}</p>
+                    <h3>${mold.name}</h3><br>
+                    <h4><strong>Model Number:</strong></h4>${mold.number} - ${mold.manufacturer} </p><br>
+                    <h4><strong>Bisque Price:</strong></h4> ${mold.bisquePrice}</p><br>
                 </div>
             </a>
         `;
@@ -78,14 +77,14 @@ function setupFilters(data) {
 
     function filterAndSortMolds() {
         const searchTerm = searchBar.value?.toLowerCase() || '';
-        //const category = categoryFilter.value || '';
         const sortBy = sortSelect.value;
 
         // Filter molds
         const filtered = data.filter(mold => {
-            const matchesSearch = mold.name.toLowerCase().includes(searchTerm) || mold.number.toLowerCase().includes(searchTerm);
-            //const matchesCategory = category ? mold.category === category : true;
-            return matchesSearch;// && matchesCategory;
+            const matchesSearch = mold.name.toLowerCase().includes(searchTerm) ||
+                                  mold.number.toLowerCase().includes(searchTerm) ||
+                                  mold.keywords.toLowerCase().includes(searchTerm); // Include keywords in the search
+            return matchesSearch;
         });
 
         // Sort molds
