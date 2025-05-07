@@ -236,3 +236,13 @@ p {
 .back-button:hover {
     background-color: #16a085; /* Darker teal on hover */
 }
+
+a {
+    color: #007BFF; /* Blue color */
+    text-decoration: none; /* Removes underline */
+}
+
+a:hover {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline; /* Adds underline on hover */
+}
