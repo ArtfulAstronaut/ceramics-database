@@ -1,37 +1,4 @@
-const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc';
-const ApiKey = "AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k";
-//const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
-const base = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${ApiKey}`;
-
-async function fetchData() {
-    try {
-        const res = await fetch(base);
-        const json = await res.json();
-        //if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        //const jsonData = res.json();
-        console.log(res);
-        const data = json.values.slice(1).map(row => {
-            return {
-                name: row[0] ?? '',
-                number: row[1] ?? '',
-                manufacturer: row[2] ?? '',
-                bisquePrice: row[3] ?? '',
-                partOfASet: row[4] ?? '',
-                shelfWall: row[5] ?? '',
-                shelfNumber: row[6] ?? '',
-                shelfLevel: row[7] ?? '',
-                keywords: row[8] ?? '',
-                notes: row[9] ?? '',
-                image: row[10] ?? 'https://www.shutterstock.com/shutterstock/videos/1111389205/thumb/12.jpg?ip=x480' // Fallback image
-            };
-        });
-        return data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        return [];
-    }
-}
-
+import { fetchData } from './dataLoad.js';
 
 function displayMolds(molds) {
     const moldGrid = document.getElementById('moldGrid');
@@ -65,6 +32,7 @@ function displayMolds(molds) {
         moldGrid.appendChild(moldCard);
     });
 }
+
 function setupFilters(data) {
     const searchBar = document.getElementById('searchBar');
     const categoryFilter = document.getElementById('categoryFilter');

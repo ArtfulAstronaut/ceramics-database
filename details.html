@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <title>Mold Details</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>
-        <button class="back-button" onclick="goBack()">← Back to Home</button>
         <h1>{mold.name}</h1>
     </header>
     
@@ -27,40 +25,8 @@
         <img id="modalImage" src="" alt="Expanded Image">
     </div>
 
-    <script>
-        const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc'; // Replace with your actual sheet ID
-        const apiKey = 'AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k'; // Replace with your actual API key
-        const base = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${apiKey}`;
-
-        async function fetchData() {
-            try {
-                const res = await fetch(base);
-                if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-                const json = await res.json();
-                const data = json.values.slice(1).map(row => {
-                    return {
-                        name: row[0] ?? '',
-                        number: row[1] ?? '',
-                        manufacturer: row[2] ?? '',
-                        bisquePrice: row[3] ?? '',
-                        partOfASet: row[4] ?? '',
-                        shelfWall: row[5] ?? '',
-                        shelfNumber: row[6] ?? '',
-                        shelfLevel: row[7] ?? '',
-                        keywords: row[8] ?? '',
-                        notes: row[9] ?? '',
-                        image: row[10] ?? '',
-                        image2: row[11] ?? '',
-                        image3: row[12] ?? '',
-                        image4: row[13] ?? '',
-                    };
-                });
-                return data;
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                return [];
-            }
-        }
+    <script type="module">
+        import { fetchData } from './dataLoad.js';
 
         async function initializeDetailsPage() {
             const params = new URLSearchParams(window.location.search);
@@ -71,7 +37,7 @@
                 return;
             }
 
-            const data = await fetchData();
+            const data = await fetchData(); // Fetch data from the external script
             const mold = data.find(m => m.name.toLowerCase() === moldName.toLowerCase());
 
             if (!mold) {
