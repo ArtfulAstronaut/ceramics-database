@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <h1>{mold.name}</h1>
+        <h1></h1>
     </header>
     
     <main>
@@ -21,7 +21,7 @@
 
     <!-- Modal for image viewing -->
     <div id="imageModal" class="modal">
-        <button class="modal-close" onclick="closeModal()">×</button>
+        <button class="modal-close" id="modalCloseBtn">×</button>
         <img id="modalImage" src="" alt="Expanded Image">
     </div>
 
@@ -30,14 +30,14 @@
 
         async function initializeDetailsPage() {
             const params = new URLSearchParams(window.location.search);
-            const moldName = params.get('name'); // Get the mold name from the query parameter
+            const moldName = params.get('name');
 
             if (!moldName) {
                 document.getElementById('moldDetails').innerHTML = '<p>Error: No mold name provided in the URL.</p>';
                 return;
             }
 
-            const data = await fetchData(); // Fetch data from the external script
+            const data = await fetchData();
             const mold = data.find(m => m.name.toLowerCase() === moldName.toLowerCase());
 
             if (!mold) {
@@ -45,17 +45,14 @@
                 return;
             }
 
-            // Set the header to the mold name
             const header = document.querySelector('header h1');
             header.textContent = mold.name;
 
-            // Combine shelfWall, shelfNumber, and shelfLevel into one line
             const shelfLocation = `${mold.shelfWall || 'N/A'} - ${mold.shelfNumber || 'N/A'} - ${mold.shelfLevel || 'N/A'}`;
 
-            // Dynamically generate image grid only for non-empty image URLs
             const images = [mold.image, mold.image2, mold.image3, mold.image4]
-                .filter(image => image) // Filter out empty or undefined image URLs
-                .map(image => `<img src="${image}" alt="${mold.name}" class="grid-image" onclick="openModal('${image}')">`)
+                .filter(image => image)
+                .map(image => `<img src="${image}" alt="${mold.name}" class="grid-image" onclick="window.openModal('${image}')">`)
                 .join('');
 
             const moldDetails = document.getElementById('moldDetails');
@@ -74,19 +71,23 @@
             `;
         }
 
-        // Function to open the modal with the clicked image
-        function openModal(imageSrc) {
+        // Modal functions exposed to window scope
+        window.openModal = function(imageSrc) {
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
             modalImage.src = imageSrc;
-            modal.style.display = 'flex'; // Show the modal
-        }
+            modal.style.display = 'flex';
+        };
 
-        // Function to close the modal
-        function closeModal() {
+        window.closeModal = function() {
             const modal = document.getElementById('imageModal');
-            modal.style.display = 'none'; // Hide the modal
-        }
+            modal.style.display = 'none';
+        };
+
+        // Optional: also hook up the close button
+        document.getElementById('modalCloseBtn').addEventListener('click', () => {
+            window.closeModal();
+        });
 
         initializeDetailsPage();
     </script>
