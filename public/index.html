@@ -218,6 +218,12 @@
             margin-bottom: 2rem;
         }
 
+        .image-gallery.single-image {
+            grid-template-columns: 1fr;
+            max-width: 500px;
+            margin: 0 auto 2rem auto;
+        }
+
         .gallery-image {
             width: 100%;
             height: 200px;
@@ -225,6 +231,12 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+        }
+
+        .gallery-image.single-image {
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
         }
 
         .gallery-image:hover {
@@ -341,6 +353,12 @@
                         <option value="bisquePrice">Bisque Price</option>
                     </select>
                 </div>
+                <div class="sort-container">
+                    <label for="keywordFilter">Filter by keyword:</label>
+                    <select id="keywordFilter" aria-label="Filter by keyword">
+                        <option value="">All Keywords</option>
+                    </select>
+                </div>
             </div>
 
             <div id="moldGrid">
@@ -449,15 +467,20 @@
             document.getElementById('detailTitle').textContent = mold.name;
 
             const images = [mold.image, mold.image2, mold.image3, mold.image4]
-                .filter(image => image && image.trim())
-                .map(image => `<img src="${image}" alt="${mold.name}" class="gallery-image" onclick="openModal('${image}')">`)
+                .filter(image => image && image.trim());
+            
+            const imageGalleryClass = images.length === 1 ? 'image-gallery single-image' : 'image-gallery';
+            const imageClass = images.length === 1 ? 'gallery-image single-image' : 'gallery-image';
+            
+            const imageHtml = images
+                .map(image => `<img src="${image}" alt="${mold.name}" class="${imageClass}" onclick="openModal('${image}')">`)
                 .join('');
 
             const shelfLocation = `Wall ${mold.shelfWall || 'N/A'}, Shelf ${mold.shelfNumber || 'N/A'}, Level ${mold.shelfLevel || 'N/A'}`;
 
             document.getElementById('moldDetails').innerHTML = `
-                <div class="image-gallery">
-                    ${images || '<p>No images available</p>'}
+                <div class="${imageGalleryClass}">
+                    ${imageHtml || '<p>No images available</p>'}
                 </div>
                 <div class="detail-info">
                     <div class="info-item">
@@ -479,6 +502,7 @@
                     <div class="info-item">
                         <strong>Location</strong><br>
                         ${shelfLocation}
+                        <br><a href="https://ceramics-database.vercel.app/images/Shelf_Diagram.png" target="_blank" style="color: #1abc9c; font-size: 14px;">📍 View Shelf Diagram</a>
                     </div>
                     <div class="info-item">
                         <strong>Keywords</strong><br>
@@ -501,17 +525,40 @@
         function setupFilters() {
             const searchBar = document.getElementById('searchBar');
             const sortSelect = document.getElementById('sortSelect');
+            const keywordFilter = document.getElementById('keywordFilter');
+
+            // Populate keyword filter
+            const allKeywords = new Set();
+            allMolds.forEach(mold => {
+                if (mold.keywords) {
+                    mold.keywords.split(',').forEach(keyword => {
+                        allKeywords.add(keyword.trim().toLowerCase());
+                    });
+                }
+            });
+
+            Array.from(allKeywords).sort().forEach(keyword => {
+                const option = document.createElement('option');
+                option.value = keyword;
+                option.textContent = keyword.charAt(0).toUpperCase() + keyword.slice(1);
+                keywordFilter.appendChild(option);
+            });
 
             function filterAndSortMolds() {
                 const searchTerm = searchBar.value?.toLowerCase() || '';
                 const sortBy = sortSelect.value;
+                const selectedKeyword = keywordFilter.value.toLowerCase();
 
                 const filtered = allMolds.filter(mold => {
                     const matchesSearch = mold.name.toLowerCase().includes(searchTerm) ||
                                           mold.number.toLowerCase().includes(searchTerm) ||
                                           mold.keywords.toLowerCase().includes(searchTerm) ||
                                           mold.manufacturer.toLowerCase().includes(searchTerm);
-                    return matchesSearch;
+                    
+                    const matchesKeyword = !selectedKeyword || 
+                                         mold.keywords.toLowerCase().includes(selectedKeyword);
+                    
+                    return matchesSearch && matchesKeyword;
                 });
 
                 const sorted = filtered.sort((a, b) => {
@@ -534,6 +581,7 @@
 
             searchBar.addEventListener('input', debounce(filterAndSortMolds, 300));
             sortSelect.addEventListener('change', filterAndSortMolds);
+            keywordFilter.addEventListener('change', filterAndSortMolds);
         }
 
         // Modal functions
