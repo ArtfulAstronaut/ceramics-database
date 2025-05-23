@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brandi's Ceramic Mold Database</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0px;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333333;
+        }
+
+        header {
+            background-color: #2c3e50;
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .search-container {
+            margin: 2rem;
+            text-align: center;
+        }
+
+        #searchBar {
+            width: 100%;
+            max-width: 600px;
+            padding: 12px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        #searchBar:focus {
+            outline: none;
+            border-color: #1abc9c;
+        }
+
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #sortSelect {
+            padding: 0.5rem;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1abc9c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #moldGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .mold-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .mold-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .mold-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .mold-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .mold-card:hover .mold-image {
+            transform: scale(1.05);
+        }
+
+        .mold-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .mold-info h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .mold-info h4 {
+            margin: 0.5rem 0 0.25rem 0;
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mold-info p {
+            margin: 0.25rem 0;
+            font-size: 16px;
+            color: #444;
+        }
+
+        .price {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: #2c3e50;
+            color: white;
+            margin-top: 3rem;
+        }
+
+        footer a {
+            color: #1abc9c;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Details page styles */
+        .back-button {
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+        }
+
+        #moldDetails {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .detail-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #1abc9c;
+        }
+
+        .info-item strong {
+            color: #2c3e50;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 3rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-close:hover {
+            opacity: 0.7;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            #moldGrid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            #moldDetails {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Index Page -->
+    <div id="indexPage">
+        <header>
+            <h1>Brandi's Ceramics: Mold Database</h1>
+        </header>
+        
+        <main>
+            <div class="search-container">
+                <input type="text" id="searchBar" placeholder="Search by name, number, or keywords..." aria-label="Search molds">
+            </div>
+            
+            <div class="controls-container">
+                <div class="sort-container">
+                    <label for="sortSelect">Sort by:</label>
+                    <select id="sortSelect" aria-label="Sort molds">
+                        <option value="name">Name</option>
+                        <option value="number">Number</option>
+                        <option value="manufacturer">Manufacturer</option>
+                        <option value="bisquePrice">Bisque Price</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="moldGrid">
+                <div class="loading">Loading molds...</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Details Page -->
+    <div id="detailsPage" style="display: none;">
+        <header>
+            <button class="back-button" onclick="showIndexPage()">
+                ← Back to Gallery
+            </button>
+            <h1 id="detailTitle">Mold Details</h1>
+        </header>
+        
+        <main>
+            <p style="text-align: center; margin: 1rem;">Click any image to expand</p>
+            <div id="moldDetails"></div>
+        </main>
+    </div>
+
+    <!-- Modal for image viewing -->
+    <div id="imageModal" class="modal">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <img id="modalImage" src="" alt="Expanded Image">
+    </div>
+
+    <footer>
+        <p>Made with ❤️ by <a href="https://theartfulastronaut.com" target="_blank">The Artful Astronaut, LLC</a></p>
+    </footer>
+
+    <script>
+        // Data loading
+        const sheetID = '1brx43eDqhroWHrSNgjPII1IQ667ofr0nZ3APFTtYhXc';
+        const apiKey = 'AIzaSyDm8pwzgmPsxdhrt7KTa4FHwXMBdlcFn5k';
+        const baseURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Sheet1?key=${apiKey}`;
+
+        let allMolds = [];
+
+        async function fetchData() {
+            try {
+                const res = await fetch(baseURL);
+                if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+                const json = await res.json();
+                return json.values.slice(1).map(row => ({
+                    name: row[0] ?? '',
+                    number: row[1] ?? '',
+                    manufacturer: row[2] ?? '',
+                    bisquePrice: row[3] ?? '',
+                    partOfASet: row[4] ?? '',
+                    shelfWall: row[5] ?? '',
+                    shelfNumber: row[6] ?? '',
+                    shelfLevel: row[7] ?? '',
+                    keywords: row[8] ?? '',
+                    notes: row[9] ?? '',
+                    image: row[10] ?? '',
+                    image2: row[11] ?? '',
+                    image3: row[12] ?? '',
+                    image4: row[13] ?? '',
+                }));
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return [];
+            }
+        }
+
+        function displayMolds(molds) {
+            const moldGrid = document.getElementById('moldGrid');
+            
+            if (!Array.isArray(molds) || molds.length === 0) {
+                moldGrid.innerHTML = '<div class="no-results">No molds found matching your criteria.</div>';
+                return;
+            }
+
+            moldGrid.innerHTML = '';
+
+            molds.forEach(mold => {
+                if (!mold || !mold.name) return;
+
+                const moldCard = document.createElement('div');
+                moldCard.className = 'mold-card';
+                moldCard.onclick = () => showMoldDetails(mold);
+                
+                const imageTag = mold.image
+                    ? `<img src="${mold.image}" alt="${mold.name}" class="mold-image">`
+                    : '<div class="mold-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999;">No Image</div>';
+
+                moldCard.innerHTML = `
+                    ${imageTag}
+                    <div class="mold-info">
+                        <h3>${mold.name}</h3>
+                        <h4>Model Number</h4>
+                        <p>${mold.number} - ${mold.manufacturer}</p>
+                        <div class="price">$${mold.bisquePrice}</div>
+                    </div>
+                `;
+                moldGrid.appendChild(moldCard);
+            });
+        }
+
+        function showMoldDetails(mold) {
+            document.getElementById('indexPage').style.display = 'none';
+            document.getElementById('detailsPage').style.display = 'block';
+            document.getElementById('detailTitle').textContent = mold.name;
+
+            const images = [mold.image, mold.image2, mold.image3, mold.image4]
+                .filter(image => image && image.trim())
+                .map(image => `<img src="${image}" alt="${mold.name}" class="gallery-image" onclick="openModal('${image}')">`)
+                .join('');
+
+            const shelfLocation = `Wall ${mold.shelfWall || 'N/A'}, Shelf ${mold.shelfNumber || 'N/A'}, Level ${mold.shelfLevel || 'N/A'}`;
+
+            document.getElementById('moldDetails').innerHTML = `
+                <div class="image-gallery">
+                    ${images || '<p>No images available</p>'}
+                </div>
+                <div class="detail-info">
+                    <div class="info-item">
+                        <strong>Model Number</strong><br>
+                        ${mold.number}
+                    </div>
+                    <div class="info-item">
+                        <strong>Manufacturer</strong><br>
+                        ${mold.manufacturer}
+                    </div>
+                    <div class="info-item">
+                        <strong>Bisque Price</strong><br>
+                        $${mold.bisquePrice}
+                    </div>
+                    <div class="info-item">
+                        <strong>Part of a Set</strong><br>
+                        ${mold.partOfASet}
+                    </div>
+                    <div class="info-item">
+                        <strong>Location</strong><br>
+                        ${shelfLocation}
+                    </div>
+                    <div class="info-item">
+                        <strong>Keywords</strong><br>
+                        ${mold.keywords}
+                    </div>
+                </div>
+                ${mold.notes ? `<div class="info-item" style="margin-top: 1rem;"><strong>Notes</strong><br>${mold.notes}</div>` : ''}
+            `;
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        function showIndexPage() {
+            document.getElementById('detailsPage').style.display = 'none';
+            document.getElementById('indexPage').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function setupFilters() {
+            const searchBar = document.getElementById('searchBar');
+            const sortSelect = document.getElementById('sortSelect');
+
+            function filterAndSortMolds() {
+                const searchTerm = searchBar.value?.toLowerCase() || '';
+                const sortBy = sortSelect.value;
+
+                const filtered = allMolds.filter(mold => {
+                    const matchesSearch = mold.name.toLowerCase().includes(searchTerm) ||
+                                          mold.number.toLowerCase().includes(searchTerm) ||
+                                          mold.keywords.toLowerCase().includes(searchTerm) ||
+                                          mold.manufacturer.toLowerCase().includes(searchTerm);
+                    return matchesSearch;
+                });
+
+                const sorted = filtered.sort((a, b) => {
+                    if (sortBy === 'bisquePrice') {
+                        return parseFloat(a.bisquePrice) - parseFloat(b.bisquePrice);
+                    }
+                    return a[sortBy]?.localeCompare(b[sortBy] || '');
+                });
+
+                displayMolds(sorted);
+            }
+
+            function debounce(func, delay) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func(...args), delay);
+                };
+            }
+
+            searchBar.addEventListener('input', debounce(filterAndSortMolds, 300));
+            sortSelect.addEventListener('change', filterAndSortMolds);
+        }
+
+        // Modal functions
+        function openModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+        }
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal when clicking outside image
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize the app
+        async function initialize() {
+            try {
+                allMolds = await fetchData();
+                if (allMolds.length === 0) {
+                    document.getElementById('moldGrid').innerHTML = '<div class="no-results">Failed to load molds. Please try again later.</div>';
+                    return;
+                }
+                displayMolds(allMolds);
+                setupFilters();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                document.getElementById('moldGrid').innerHTML = '<div class="no-results">Error loading data. Please refresh the page.</div>';
+            }
+        }
+
+        initialize();
+    </script>
+</body>
+</html>
