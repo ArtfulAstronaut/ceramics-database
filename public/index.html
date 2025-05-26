@@ -470,7 +470,49 @@
             });
         }
 
+        // Save and restore search state
+        let searchState = {
+            searchTerm: '',
+            sortBy: 'name',
+            selectedKeyword: '',
+            scrollPosition: 0
+        };
+
+        function saveSearchState() {
+            const searchBar = document.getElementById('searchBar');
+            const sortSelect = document.getElementById('sortSelect');
+            const keywordFilter = document.getElementById('keywordFilter');
+            
+            searchState = {
+                searchTerm: searchBar.value,
+                sortBy: sortSelect.value,
+                selectedKeyword: keywordFilter.value,
+                scrollPosition: window.scrollY
+            };
+        }
+
+        function restoreSearchState() {
+            const searchBar = document.getElementById('searchBar');
+            const sortSelect = document.getElementById('sortSelect');
+            const keywordFilter = document.getElementById('keywordFilter');
+            
+            searchBar.value = searchState.searchTerm;
+            sortSelect.value = searchState.sortBy;
+            keywordFilter.value = searchState.selectedKeyword;
+            
+            // Trigger filter to update the display
+            filterAndSortMolds();
+            
+            // Restore scroll position after a brief delay to ensure content is loaded
+            setTimeout(() => {
+                window.scrollTo(0, searchState.scrollPosition);
+            }, 100);
+        }
+
         function showMoldDetails(mold) {
+            // Save current search state before navigating
+            saveSearchState();
+            
             document.getElementById('indexPage').style.display = 'none';
             document.getElementById('detailsPage').style.display = 'block';
             document.getElementById('detailTitle').textContent = mold.name;
@@ -527,7 +569,9 @@
         function showIndexPage() {
             document.getElementById('detailsPage').style.display = 'none';
             document.getElementById('indexPage').style.display = 'block';
-            window.scrollTo(0, 0);
+            
+            // Restore the previous search state
+            restoreSearchState();
         }
 
         function setupFilters() {
@@ -579,6 +623,9 @@
 
                 displayMolds(sorted);
             }
+
+            // Make filterAndSortMolds available globally for restoreSearchState
+            window.filterAndSortMolds = filterAndSortMolds;
 
             function debounce(func, delay) {
                 let timeout;
