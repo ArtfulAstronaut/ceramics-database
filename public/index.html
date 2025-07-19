@@ -527,8 +527,14 @@
                 .map(image => `<img src="${image}" alt="${mold.name}" class="${imageClass}" onclick="openModal('${image}')">`)
                 .join('');
 
-            
+            // Updated location display to use storageSpace instead of shelfLevel
             const shelfLocation = `Wall: ${mold.shelfWall || 'N/A'}<br>Shelf: ${mold.shelfNumber || 'N/A'}<br>Container: ${mold.storageSpace || 'N/A'}`;
+
+            // Determine which shelf diagram to show based on storage space
+            let shelfDiagramUrl = "https://ceramics-database.vercel.app/images/Shelf_Diagram.png"; // Default M3 diagram
+            if (mold.storageSpace === "M2") {
+                shelfDiagramUrl = "https://ceramics-database.vercel.app/images/M2-Shelf_Diagram.png";
+            }
 
             document.getElementById('moldDetails').innerHTML = `
                 <div class="${imageGalleryClass}">
@@ -545,7 +551,7 @@
                     </div>
                     <div class="info-item">
                         <strong>Bisque Price</strong><br>
-                        $${mold.bisquePrice}
+                        ${mold.bisquePrice}
                     </div>
                     <div class="info-item">
                         <strong>Part of a Set</strong><br>
@@ -554,7 +560,7 @@
                     <div class="info-item">
                         <strong>Location</strong><br>
                         ${shelfLocation}
-                        <br><a href="https://ceramics-database.vercel.app/images/Shelf_Diagram.png" target="_blank" style="color: #1abc9c; font-size: 14px;">📍 View Shelf Diagram</a>
+                        <br><a href="${shelfDiagramUrl}" target="_blank" style="color: #1abc9c; font-size: 14px;">📍 View Shelf Diagram</a>
                     </div>
                     ${mold.size ? `<div class="info-item">
                         <strong>Size</strong><br>
