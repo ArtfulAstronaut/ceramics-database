@@ -417,7 +417,7 @@
                     partOfASet: row[4] ?? '',
                     shelfWall: row[5] ?? '',
                     shelfNumber: row[6] ?? '',
-                    shelfLevel: row[7] ?? '',
+                    storageSpace: row[7] ?? '',  // Changed from shelfLevel to storageSpace
                     keywords: row[8] ?? '',
                     searchTerms: row[9] ?? '',
                     size: row[10] ?? '',
@@ -527,7 +527,8 @@
                 .map(image => `<img src="${image}" alt="${mold.name}" class="${imageClass}" onclick="openModal('${image}')">`)
                 .join('');
 
-            const shelfLocation = `Wall ${mold.shelfWall || 'N/A'}, Shelf ${mold.shelfNumber || 'N/A'}, Level ${mold.shelfLevel || 'N/A'}`;
+            // Updated location display to use storageSpace instead of shelfLevel
+            const shelfLocation = `Wall ${mold.shelfWall || 'N/A'}, Shelf ${mold.shelfNumber || 'N/A'}, Storage Space ${mold.storageSpace || 'N/A'}`;
 
             document.getElementById('moldDetails').innerHTML = `
                 <div class="${imageGalleryClass}">
