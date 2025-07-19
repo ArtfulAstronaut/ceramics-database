@@ -527,8 +527,8 @@
                 .map(image => `<img src="${image}" alt="${mold.name}" class="${imageClass}" onclick="openModal('${image}')">`)
                 .join('');
 
-            // Updated location display to use storageSpace instead of shelfLevel
-            const shelfLocation = `Wall ${mold.shelfWall || 'N/A'}, Shelf ${mold.shelfNumber || 'N/A'}, Storage Space ${mold.storageSpace || 'N/A'}`;
+            
+            const shelfLocation = `Wall: ${mold.shelfWall || 'N/A'}<br>Shelf: ${mold.shelfNumber || 'N/A'}<br>Container: ${mold.storageSpace || 'N/A'}`;
 
             document.getElementById('moldDetails').innerHTML = `
                 <div class="${imageGalleryClass}">
