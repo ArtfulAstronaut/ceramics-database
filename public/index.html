@@ -531,7 +531,7 @@
             const shelfLocation = `Wall: ${mold.shelfWall || 'N/A'}<br>Shelf: ${mold.shelfNumber || 'N/A'}<br>Container: ${mold.storageSpace || 'N/A'}`;
 
             // Determine which shelf diagram to show based on storage space
-            let shelfDiagramUrl = "https://ceramics-database.vercel.app/images/Shelf_Diagram.png"; // Default M3 diagram
+            let shelfDiagramUrl = "https://ceramics-database.vercel.app/images/M3_Shelf_Diagram.png"; // Default M3 diagram
             if (mold.storageSpace === "M2") {
                 shelfDiagramUrl = "https://ceramics-database.vercel.app/images/M2-Shelf_Diagram.png";
             }
@@ -694,3 +694,4 @@
     </script>
 </body>
 </html>
+
