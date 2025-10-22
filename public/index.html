@@ -609,6 +609,15 @@
                 const selectedKeyword = keywordFilter.value.toLowerCase();
 
                 const filtered = allMolds.filter(mold => {
+                    // Check if mold is NSFW
+                    const isNSFW = mold.searchTerms.toLowerCase().includes('nsfw') || 
+                                   mold.keywords.toLowerCase().includes('nsfw');
+                    
+                    // Hide NSFW items unless NSFW keyword is explicitly selected
+                    if (isNSFW && selectedKeyword !== 'nsfw') {
+                        return false;
+                    }
+                    
                     const matchesSearch = mold.name.toLowerCase().includes(searchTerm) ||
                                           mold.number.toLowerCase().includes(searchTerm) ||
                                           mold.keywords.toLowerCase().includes(searchTerm) ||
@@ -694,4 +703,5 @@
     </script>
 </body>
 </html>
+
 
